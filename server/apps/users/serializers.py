@@ -2,7 +2,7 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
 from .models import CustomUser
-from .services import create_user
+from .services import create_user, update_user_profile
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -52,3 +52,36 @@ class LoginSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         return value.strip().lower()
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField(write_only=True)
+
+
+class MeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = (
+            "id",
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "profile_picture",
+        )
+        read_only_fields = ("id", "email")
+
+    def validate_username(self, value):
+        username = value.strip()
+        queryset = CustomUser.objects.filter(username__iexact=username)
+
+        if self.instance is not None:
+            queryset = queryset.exclude(pk=self.instance.pk)
+
+        if queryset.exists():
+            raise serializers.ValidationError("A user with this username already exists.")
+
+        return username
+
+    def update(self, instance, validated_data):
+        return update_user_profile(instance, **validated_data)

@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import CustomUser
@@ -26,3 +27,22 @@ def get_tokens_for_user(user):
         "access": str(refresh.access_token),
         "refresh": str(refresh),
     }
+
+
+def blacklist_refresh_token(refresh_token):
+    try:
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+    except TokenError:
+        return False
+
+    return True
+
+
+def update_user_profile(user, **profile_data):
+    for field, value in profile_data.items():
+        setattr(user, field, value)
+
+    update_fields = [*profile_data.keys(), "updated_at"]
+    user.save(update_fields=update_fields)
+    return user
