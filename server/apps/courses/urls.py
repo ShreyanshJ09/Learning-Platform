@@ -1,10 +1,40 @@
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from .views import CourseViewSet
+from .views import (
+    CourseModuleListCreateView,
+    CourseViewSet,
+    LessonDetailView,
+    ModuleDetailView,
+    ModuleLessonListCreateView,
+)
 
 app_name = "courses"
 
 router = DefaultRouter()
 router.register("courses", CourseViewSet, basename="course")
 
-urlpatterns = router.urls
+urlpatterns = [
+    path(
+        "courses/<uuid:course_id>/modules/",
+        CourseModuleListCreateView.as_view(),
+        name="course-modules",
+    ),
+    path(
+        "modules/<uuid:module_id>/",
+        ModuleDetailView.as_view(),
+        name="module-detail",
+    ),
+    path(
+        "modules/<uuid:module_id>/lessons/",
+        ModuleLessonListCreateView.as_view(),
+        name="module-lessons",
+    ),
+    path(
+        "lessons/<uuid:lesson_id>/",
+        LessonDetailView.as_view(),
+        name="lesson-detail",
+    ),
+]
+
+urlpatterns += router.urls
