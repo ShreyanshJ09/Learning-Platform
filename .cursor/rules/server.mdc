@@ -1,0 +1,28 @@
+---
+description: Server (Django/DRF) conventions for text-to-learn
+globs: server/**/*
+alwaysApply: false
+---
+
+# Server rules
+
+Applies to: `server/**`
+
+Read `BACKEND_PLAN.md` before making changes.
+
+Implement only the next unfinished task.
+
+Explain the plan before writing code.
+
+Keep views thin.
+
+Business logic belongs in `services.py`.
+
+Use Django ORM and PostgreSQL.
+
+Do not modify unrelated files.
+
+After coding:
+- Explain what changed.
+- Tell me which commands to run.
+- Suggest only the next task.

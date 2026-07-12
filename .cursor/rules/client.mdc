@@ -1,0 +1,32 @@
+---
+description: Client (React/Vite) conventions for text-to-learn
+globs: client/**/*
+alwaysApply: false
+---
+
+# Client rules
+
+Applies to: `client/**`
+
+Read `FRONTEND_PLAN.md` before making changes.
+
+Implement only the next unfinished task.
+
+Explain the plan before writing code.
+
+Keep pages thin.
+
+Business logic belongs in hooks, api, or lib.
+
+Use React Query for server state.
+
+Use React Hook Form + Zod for forms.
+
+Use shadcn/ui components and Tailwind CSS.
+
+Do not modify unrelated files.
+
+After coding:
+- Explain what changed in detail as this is also meant to learn frontend.
+- Tell me which commands to run.
+- Suggest only the next task.
