@@ -102,3 +102,23 @@ class LessonCreateSerializer(serializers.ModelSerializer):
             "created_at",
         )
         read_only_fields = ("id", "order", "created_at")
+
+
+class ExploreCourseDetailSerializer(serializers.ModelSerializer):
+    creator = serializers.StringRelatedField(read_only=True)
+    modules = ModuleWithLessonSummariesSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Course
+        fields = (
+            "id",
+            "creator",
+            "title",
+            "description",
+            "tags",
+            "is_public",
+            "created_at",
+            "updated_at",
+            "modules",
+        )
+        read_only_fields = fields

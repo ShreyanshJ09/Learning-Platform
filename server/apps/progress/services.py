@@ -3,7 +3,7 @@ from django.utils import timezone
 
 from apps.courses.models import Course, Lesson
 
-from .models import UserProgress
+from .models import UserCourse, UserProgress
 
 
 def mark_lesson_complete(*, user, lesson_id):
@@ -37,3 +37,22 @@ def get_course_progress(*, user, course_id):
         "completed": completed,
         "percentage": percentage,
     }
+
+
+def save_course(*, user, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+    UserCourse.objects.get_or_create(user=user, course=course)
+    return {"saved": True}
+
+
+def unsave_course(*, user, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+    UserCourse.objects.filter(user=user, course=course).delete()
+
+
+def list_saved_courses(*, user):
+    return (
+        Course.objects.filter(saved_by__user=user)
+        .select_related("creator")
+        .order_by("-saved_by__saved_at")
+    )

@@ -14,3 +14,7 @@ class CourseProgressSerializer(serializers.Serializer):
     total = serializers.IntegerField()
     completed = serializers.IntegerField()
     percentage = serializers.IntegerField()
+
+
+class CourseSavedSerializer(serializers.Serializer):
+    saved = serializers.BooleanField()

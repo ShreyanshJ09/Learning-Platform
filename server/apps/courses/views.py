@@ -1,9 +1,12 @@
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets
+from rest_framework.permissions import AllowAny
 
 from .models import Course, Lesson, Module
 from .serializers import (
     CourseSerializer,
+    ExploreCourseDetailSerializer,
     LessonCreateSerializer,
     LessonSerializer,
     LessonSummarySerializer,
@@ -11,7 +14,12 @@ from .serializers import (
     ModuleSerializer,
     ModuleWithLessonSummariesSerializer,
 )
-from .services import create_lesson_for_module, create_module_for_course
+from .services import (
+    create_lesson_for_module,
+    create_module_for_course,
+    get_public_course,
+    list_public_courses,
+)
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -109,3 +117,36 @@ class LessonDetailView(generics.RetrieveUpdateDestroyAPIView):
             "module__course",
             "module__course__creator",
         ).filter(module__course__creator=self.request.user)
+
+
+class ExploreCourseListView(generics.ListAPIView):
+    """List public courses. Supports ?q= and ?tags= filters."""
+
+    authentication_classes = ()
+    permission_classes = (AllowAny,)
+    serializer_class = CourseSerializer
+
+    def get_queryset(self):
+        q = self.request.query_params.get("q")
+        tags_param = self.request.query_params.get("tags")
+        tags = (
+            [tag.strip() for tag in tags_param.split(",") if tag.strip()]
+            if tags_param
+            else None
+        )
+        return list_public_courses(q=q, tags=tags)
+
+
+class ExploreCourseDetailView(generics.RetrieveAPIView):
+    """Retrieve a public course with nested modules and lessons."""
+
+    authentication_classes = ()
+    permission_classes = (AllowAny,)
+    serializer_class = ExploreCourseDetailSerializer
+    lookup_url_kwarg = "course_id"
+
+    def get_object(self):
+        course = get_public_course(course_id=self.kwargs["course_id"])
+        if course is None:
+            raise Http404
+        return course

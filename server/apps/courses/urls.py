@@ -1,6 +1,8 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
+from apps.progress.views import CourseSaveView, SavedCourseListView
+
 from .views import (
     CourseModuleListCreateView,
     CourseViewSet,
@@ -15,6 +17,16 @@ router = DefaultRouter()
 router.register("courses", CourseViewSet, basename="course")
 
 urlpatterns = [
+    path(
+        "courses/saved/",
+        SavedCourseListView.as_view(),
+        name="course-saved-list",
+    ),
+    path(
+        "courses/<uuid:course_id>/save/",
+        CourseSaveView.as_view(),
+        name="course-save",
+    ),
     path(
         "courses/<uuid:course_id>/modules/",
         CourseModuleListCreateView.as_view(),

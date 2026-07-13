@@ -66,6 +66,8 @@ LOCAL_APPS = [
     "apps.users.apps.UsersConfig",
     "apps.courses",
     "apps.generation.apps.GenerationConfig",
+    "apps.progress.apps.ProgressConfig",
+    "apps.media.apps.MediaConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -163,3 +165,5 @@ CORS_ALLOWED_ORIGINS = env_list(
     "CORS_ALLOWED_ORIGINS",
     default=["http://localhost:5173", "http://127.0.0.1:5173"],
 )
+
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY", "")

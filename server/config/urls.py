@@ -23,4 +23,6 @@ urlpatterns = [
     path('api/auth/', include('apps.users.urls')),
     path('api/generate/', include('apps.generation.urls')),
     path('api/progress/', include('apps.progress.urls')),
+    path('api/explore/', include('apps.courses.explore_urls')),
+    path('api/media/', include('apps.media.urls')),
 ]
