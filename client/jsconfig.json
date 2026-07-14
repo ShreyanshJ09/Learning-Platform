@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-    "allowJs": true,
-    "checkJs": false,
-    "noEmit": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "jsx": "react-jsx",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "ESNext",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "checkJs": false
   },
   "include": ["src"]
 }
