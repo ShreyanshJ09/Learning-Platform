@@ -2,10 +2,10 @@
  * TanStack Query cache key factory.
  *
  * Keys are arrays (React Query's format). Every useQuery / invalidateQueries
- * call must use these — never hardcode ['auth', 'me'] in random files.
+ * call must use these — never hardcode ['auth', 'me'] or ['courses'] in random files.
  *
- * Phase 2 mainly needs `auth.me`. Course/lesson keys are here so later
- * phases don't invent conflicting key shapes.
+ * Phase 3 needs `courses.list()`. detail/modules/lessons stubs are kept so
+ * later phases don't invent conflicting key shapes.i
  */
 export const queryKeys = {
   auth: {

@@ -1,44 +1,58 @@
-import { LogoutButton } from '@/features/auth/components/LogoutButton'
-import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser'
+import { Link } from 'react-router-dom'
+import { BookOpen } from 'lucide-react'
+import { EmptyState } from '@/components/common/EmptyState'
+import { PageHeader } from '@/components/common/PageHeader'
+import { ErrorState } from '@/components/feedback/ErrorState'
+import { CourseGridSkeleton } from '@/components/feedback/CourseGridSkeleton'
+import { buttonVariants } from '@/components/ui/button'
+import { CourseGrid } from '@/features/courses/components/CourseGrid'
+import { useCourses } from '@/features/courses/hooks/useCourses'
+import { paths } from '@/routes/paths'
 
 /**
- * Temporary dashboard shell for Phase 2 smoke tests.
- * Real course list arrives in Phase 3.
+ * Authenticated home — list the user's courses (loading / empty / error / success).
  */
 export function DashboardPage() {
-  const { data: user, isPending } = useCurrentUser()
+  const { data: courses, isPending, isError, error, refetch } = useCourses()
 
   return (
-    <main className="flex min-h-svh flex-col bg-background px-6 py-10 text-foreground">
-      <div className="mx-auto flex w-full max-w-lg flex-col gap-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-            <p className="text-sm text-muted-foreground">
-              Auth complete — course list comes in Phase 3.
-            </p>
-          </div>
-          <LogoutButton />
-        </div>
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        title="My Courses"
+        description="Courses you've created."
+        actions={
+          <Link to={paths.createCourse} className={buttonVariants()}>
+            Create course
+          </Link>
+        }
+      />
 
-        <section className="rounded-xl border border-border bg-card p-4 text-sm text-card-foreground">
-          <p className="font-medium">Signed in as</p>
-          {isPending && !user ? (
-            <p className="mt-1 text-muted-foreground">Loading profile…</p>
-          ) : (
-            <dl className="mt-2 space-y-1 text-muted-foreground">
-              <div className="flex gap-2">
-                <dt className="w-20 shrink-0 text-foreground">Email</dt>
-                <dd>{user?.email ?? '—'}</dd>
-              </div>
-              <div className="flex gap-2">
-                <dt className="w-20 shrink-0 text-foreground">Username</dt>
-                <dd>{user?.username ?? '—'}</dd>
-              </div>
-            </dl>
-          )}
-        </section>
-      </div>
-    </main>
+      {isPending ? <CourseGridSkeleton /> : null}
+
+      {!isPending && isError ? (
+        <ErrorState
+          title="Couldn't load courses"
+          message={error?.message ?? 'Please try again.'}
+          onRetry={() => refetch()}
+        />
+      ) : null}
+
+      {!isPending && !isError && courses?.length === 0 ? (
+        <EmptyState
+          icon={<BookOpen className="size-5" aria-hidden />}
+          title="No courses yet"
+          description="Create your first course from a topic you want to learn."
+          action={
+            <Link to={paths.createCourse} className={buttonVariants()}>
+              Create your first course
+            </Link>
+          }
+        />
+      ) : null}
+
+      {!isPending && !isError && courses?.length > 0 ? (
+        <CourseGrid courses={courses} />
+      ) : null}
+    </div>
   )
 }

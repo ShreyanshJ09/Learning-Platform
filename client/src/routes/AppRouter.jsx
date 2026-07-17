@@ -1,7 +1,11 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { AppShell } from '@/components/layout/AppShell'
+import { CourseDetailPage } from '@/pages/CourseDetailPage'
+import { CreateCoursePage } from '@/pages/CreateCoursePage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { LandingPage } from '@/pages/LandingPage'
 import { LoginPage } from '@/pages/LoginPage'
+import { ProfilePage } from '@/pages/ProfilePage'
 import { RegisterPage } from '@/pages/RegisterPage'
 import { paths } from '@/routes/paths'
 import { ProtectedRoute } from '@/routes/ProtectedRoute'
@@ -13,15 +17,18 @@ export function AppRouter() {
       <Routes>
         <Route path={paths.landing} element={<LandingPage />} />
 
-        {/* Public-only: login / register */}
         <Route element={<PublicOnlyRoute />}>
           <Route path={paths.login} element={<LoginPage />} />
           <Route path={paths.register} element={<RegisterPage />} />
         </Route>
 
-        {/* Protected: must be logged in */}
         <Route element={<ProtectedRoute />}>
-          <Route path={paths.dashboard} element={<DashboardPage />} />
+          <Route element={<AppShell />}>
+            <Route path={paths.dashboard} element={<DashboardPage />} />
+            <Route path={paths.createCourse} element={<CreateCoursePage />} />
+            <Route path={paths.profile} element={<ProfilePage />} />
+            <Route path="/courses/:courseId" element={<CourseDetailPage />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<Navigate to={paths.landing} replace />} />
