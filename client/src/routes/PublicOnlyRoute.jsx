@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useSearchParams } from 'react-router-dom'
+import { FullPageSpinner } from '@/components/feedback/FullPageSpinner'
 import { getSafeNextPath } from '@/features/auth/getSafeNextPath'
 import { useAuth } from '@/providers/AuthProvider'
 
@@ -11,11 +12,7 @@ export function PublicOnlyRoute() {
   const [searchParams] = useSearchParams()
 
   if (status === 'loading') {
-    return (
-      <main className="flex min-h-svh items-center justify-center bg-background text-muted-foreground">
-        <p className="text-sm">Loading session…</p>
-      </main>
-    )
+    return <FullPageSpinner />
   }
 
   if (status === 'authenticated') {

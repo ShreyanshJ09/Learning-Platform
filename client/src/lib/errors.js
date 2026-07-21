@@ -183,3 +183,17 @@ export function isValidationError(error) {
 export function isNetworkError(error) {
   return error.code === 'network'
 }
+
+/**
+ * True when an API/query error represents a missing or inaccessible resource.
+ * @param {unknown} error
+ */
+export function isNotFoundError(error) {
+  if (error == null || typeof error !== 'object') return false
+
+  const candidate = /** @type {{ code?: string, status?: number | null }} */ (
+    error
+  )
+
+  return candidate.code === 'not_found' || candidate.status === 404
+}

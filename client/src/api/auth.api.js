@@ -63,3 +63,15 @@ export async function meRequest() {
   const { data } = await apiClient.get(AUTH.me)
   return data
 }
+
+/**
+ * Update current user profile (PATCH /api/auth/me/).
+ * Email is read-only on the backend.
+ *
+ * @param {{ username?: string, first_name?: string, last_name?: string, profile_picture?: string }} payload
+ * @returns {Promise<object>}
+ */
+export async function updateProfileRequest(payload) {
+  const { data } = await apiClient.patch(AUTH.me, payload)
+  return data
+}

@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
-import { toast } from 'sonner'
 import { useUpdateCourse } from '@/features/courses/hooks/useUpdateCourse'
 import { editCourseSchema } from '@/features/courses/schemas'
 import { Button } from '@/components/ui/button'
@@ -65,7 +64,6 @@ export function EditCourseDialog({ course, open, onOpenChange }) {
         tags: values.tags,
         is_public: values.is_public,
       })
-      toast.success('Course updated')
       onOpenChange(false)
     } catch (err) {
       const apiError = normalizeApiError(err)
@@ -167,15 +165,16 @@ export function EditCourseDialog({ course, open, onOpenChange }) {
             ) : null}
           </div>
 
-          <label className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-2">
             <input
+              id="edit-course-public"
               type="checkbox"
               className="size-4 rounded border border-input"
               disabled={isPending}
               {...register('is_public')}
             />
-            Make course public
-          </label>
+            <Label htmlFor="edit-course-public">Make course public</Label>
+          </div>
         </form>
 
         <DialogFooter>

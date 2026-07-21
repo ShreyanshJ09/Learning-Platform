@@ -1,15 +1,16 @@
-import { Link, useParams } from 'react-router-dom'
-import { BookOpen, Layers } from 'lucide-react'
+import { useParams } from 'react-router-dom'
+import { Layers } from 'lucide-react'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/feedback/ErrorState'
+import { isNotFoundError } from '@/lib/errors'
 import { SyllabusSkeleton } from '@/components/feedback/SyllabusSkeleton'
-import { buttonVariants } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { CourseHeader } from '@/features/courses/components/CourseHeader'
 import { SyllabusTree } from '@/features/courses/components/SyllabusTree'
 import { useCourse } from '@/features/courses/hooks/useCourse'
 import { useCourseModules } from '@/features/courses/hooks/useCourseModules'
+import { NotFoundPage } from '@/pages/NotFoundPage'
 import { paths } from '@/routes/paths'
 
 /**
@@ -35,21 +36,14 @@ export function CourseDetailPage() {
     refetch: refetchModules,
   } = useCourseModules(courseId)
 
-  const isNotFound =
-    courseError &&
-    (courseErr?.code === 'not_found' || courseErr?.status === 404)
-
-  if (isNotFound) {
+  if (courseError && isNotFoundError(courseErr)) {
     return (
-      <EmptyState
-        icon={<BookOpen className="size-5" aria-hidden />}
+      <NotFoundPage
+        fullPage={false}
         title="Course not found"
         description="This course doesn't exist or you don't have access to it."
-        action={
-          <Link to={paths.dashboard} className={buttonVariants({ variant: 'outline' })}>
-            Back to dashboard
-          </Link>
-        }
+        backTo={paths.dashboard}
+        backLabel="Back to dashboard"
       />
     )
   }

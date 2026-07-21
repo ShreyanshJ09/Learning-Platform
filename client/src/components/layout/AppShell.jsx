@@ -34,6 +34,12 @@ export function AppShell({ hideSidebar = false }) {
 
   return (
     <div className="flex min-h-svh bg-background text-foreground">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-4 focus:rounded-lg focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:ring-3 focus:ring-ring/50"
+      >
+        Skip to content
+      </a>
       {!hideSidebar ? (
         <>
           {/* Desktop sidebar */}
@@ -73,7 +79,7 @@ export function AppShell({ hideSidebar = false }) {
           showMenu={!hideSidebar}
           onMenuClick={() => setMobileOpen(true)}
         />
-        <main className="flex-1 overflow-auto">
+        <main id="main-content" className="flex-1 overflow-auto">
           {hideSidebar ? (
             <Outlet />
           ) : (

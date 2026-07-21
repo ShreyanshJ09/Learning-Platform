@@ -1,10 +1,9 @@
-import { Link, useParams } from 'react-router-dom'
-import { BookOpen } from 'lucide-react'
+import { useParams } from 'react-router-dom'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
-import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/feedback/ErrorState'
 import { LessonSkeleton } from '@/components/feedback/LessonSkeleton'
-import { buttonVariants } from '@/components/ui/button'
+import { isNotFoundError } from '@/lib/errors'
+import { NotFoundPage } from '@/pages/NotFoundPage'
 import { useCourse } from '@/features/courses/hooks/useCourse'
 import { useCourseModules } from '@/features/courses/hooks/useCourseModules'
 import { GenerateLessonPanel } from '@/features/generation/components/GenerateLessonPanel'
@@ -37,25 +36,15 @@ export function LessonViewerPage() {
 
   const { prev, next } = getAdjacentLessons(modules, lessonId)
 
-  const isNotFound =
-    lessonError &&
-    (lessonErr?.code === 'not_found' || lessonErr?.status === 404)
-
-  if (isNotFound) {
+  if (lessonError && isNotFoundError(lessonErr)) {
     return (
       <div className="px-4 py-6 sm:px-6">
-        <EmptyState
-          icon={<BookOpen className="size-5" aria-hidden />}
+        <NotFoundPage
+          fullPage={false}
           title="Lesson not found"
           description="This lesson doesn't exist or you don't have access to it."
-          action={
-            <Link
-              to={courseId ? paths.course(courseId) : paths.dashboard}
-              className={buttonVariants({ variant: 'outline' })}
-            >
-              {courseId ? 'Back to course' : 'Back to dashboard'}
-            </Link>
-          }
+          backTo={courseId ? paths.course(courseId) : paths.dashboard}
+          backLabel={courseId ? 'Back to course' : 'Back to dashboard'}
         />
       </div>
     )

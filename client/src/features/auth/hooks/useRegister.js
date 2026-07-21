@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { useAuth } from '@/providers/AuthProvider'
 
 /**
@@ -10,5 +11,6 @@ export function useRegister() {
 
   return useMutation({
     mutationFn: (payload) => register(payload),
+    onSuccess: () => toast.success('Account created'),
   })
 }

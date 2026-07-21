@@ -16,14 +16,25 @@ const STEPS = [
  */
 export function GenerationProgress({ className }) {
   const [activeStep, setActiveStep] = useState(0)
+  const [reduceMotion, setReduceMotion] = useState(false)
 
   useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setReduceMotion(media.matches)
+    update()
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
+
+  useEffect(() => {
+    if (reduceMotion) return undefined
+
     const timer = window.setInterval(() => {
       setActiveStep((current) => Math.min(current + 1, STEPS.length - 1))
     }, 6_000)
 
     return () => window.clearInterval(timer)
-  }, [])
+  }, [reduceMotion])
 
   return (
     <div
@@ -35,7 +46,10 @@ export function GenerationProgress({ className }) {
       )}
     >
       <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-        <Loader2 className="size-6 animate-spin" aria-hidden />
+        <Loader2
+          className="size-6 motion-reduce:animate-none animate-spin"
+          aria-hidden
+        />
       </div>
 
       <div className="space-y-1">
@@ -49,14 +63,14 @@ export function GenerationProgress({ className }) {
 
       <ol className="w-full max-w-sm space-y-2 text-left">
         {STEPS.map((label, index) => {
-          const isComplete = index < activeStep
-          const isCurrent = index === activeStep
+          const isComplete = !reduceMotion && index < activeStep
+          const isCurrent = !reduceMotion && index === activeStep
 
           return (
             <li
               key={label}
               className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
+                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm motion-reduce:transition-none transition-colors',
                 isCurrent && 'bg-muted/60 text-foreground',
                 isComplete && 'text-muted-foreground',
                 !isCurrent && !isComplete && 'text-muted-foreground/60',
@@ -74,7 +88,7 @@ export function GenerationProgress({ className }) {
                 {isComplete ? (
                   <Check className="size-3.5" />
                 ) : isCurrent ? (
-                  <Loader2 className="size-3.5 animate-spin" />
+                  <Loader2 className="size-3.5 motion-reduce:animate-none animate-spin" />
                 ) : (
                   <span className="size-1.5 rounded-full bg-current opacity-40" />
                 )}

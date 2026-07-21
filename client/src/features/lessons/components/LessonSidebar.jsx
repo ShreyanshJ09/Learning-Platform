@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronDown, ListTree } from 'lucide-react'
 import { sortByOrder } from '@/features/lessons/lib/lessonNavigation'
@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils'
  */
 export function LessonSidebar({ courseId, lessonId, modules, className }) {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const navId = useId()
   const sortedModules = sortByOrder(modules)
 
   if (sortedModules.length === 0) return null
@@ -38,6 +39,7 @@ export function LessonSidebar({ courseId, lessonId, modules, className }) {
         type="button"
         className="flex w-full items-center justify-between gap-2 rounded-xl bg-card px-3 py-2.5 text-sm font-medium text-foreground ring-1 ring-foreground/10 lg:hidden"
         aria-expanded={mobileOpen}
+        aria-controls={navId}
         onClick={() => setMobileOpen((open) => !open)}
       >
         <span className="flex items-center gap-2">
@@ -54,6 +56,7 @@ export function LessonSidebar({ courseId, lessonId, modules, className }) {
       </button>
 
       <nav
+        id={navId}
         aria-label="Lesson syllabus"
         className={cn(
           'mt-2 rounded-xl bg-card p-3 ring-1 ring-foreground/10 lg:mt-0 lg:flex-1 lg:overflow-y-auto lg:rounded-none lg:bg-transparent lg:p-4 lg:ring-0',

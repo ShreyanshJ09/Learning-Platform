@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { useAuth } from '@/providers/AuthProvider'
 
 /**
@@ -11,5 +12,6 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: (credentials) => login(credentials),
+    onSuccess: () => toast.success('Welcome back!'),
   })
 }

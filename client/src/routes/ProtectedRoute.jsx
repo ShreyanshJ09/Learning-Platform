@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { FullPageSpinner } from '@/components/feedback/FullPageSpinner'
 import { useAuth } from '@/providers/AuthProvider'
 import { paths } from '@/routes/paths'
 
@@ -13,7 +14,7 @@ export function ProtectedRoute() {
   const location = useLocation()
 
   if (status === 'loading') {
-    return <FullPageSplash />
+    return <FullPageSpinner />
   }
 
   if (status === 'unauthenticated') {
@@ -29,10 +30,3 @@ export function ProtectedRoute() {
   return <Outlet />
 }
 
-function FullPageSplash() {
-  return (
-    <main className="flex min-h-svh items-center justify-center bg-background text-muted-foreground">
-      <p className="text-sm">Loading session…</p>
-    </main>
-  )
-}
