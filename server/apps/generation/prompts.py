@@ -66,5 +66,8 @@ Rules:
 - Include 1 to 2 video query blocks.
 - Include 4 to 5 MCQ blocks.
 - MCQ answer must be a zero-based integer index into options.
-- Do not include IDs, markdown, comments, or extra top-level keys.
+- Paragraph, heading, objective, and MCQ text may use Markdown only
+  (e.g. **bold**, *italic*, - bullet lists, 1. numbered lists).
+- Never use HTML tags in any text field (no <b>, <ul>, <li>, <p>, <br>, etc.).
+- Do not include IDs, comments, or extra top-level keys.
 """.strip()

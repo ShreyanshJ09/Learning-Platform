@@ -1,5 +1,6 @@
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { htmlToMarkdown } from '@/lib/htmlToMarkdown'
 import { cn } from '@/lib/utils'
 
 /**
@@ -8,10 +9,13 @@ import { cn } from '@/lib/utils'
  *
  * react-markdown does not render raw HTML by default (no rehype-raw),
  * so untrusted lesson text stays relatively safe without rehype-sanitize.
+ * Gemini sometimes still emits HTML; htmlToMarkdown normalizes it first.
  *
  * @param {{ text: string, className?: string }} props
  */
 export function ParagraphMarkdown({ text, className }) {
+  const markdown = htmlToMarkdown(text)
+
   return (
     <div
       className={cn(
@@ -27,7 +31,7 @@ export function ParagraphMarkdown({ text, className }) {
         className,
       )}
     >
-      <Markdown remarkPlugins={[remarkGfm]}>{text}</Markdown>
+      <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
     </div>
   )
 }

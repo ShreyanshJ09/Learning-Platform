@@ -1,4 +1,5 @@
 import { CheckCircle2 } from 'lucide-react'
+import { htmlToPlainText } from '@/lib/htmlToMarkdown'
 import { cn } from '@/lib/utils'
 
 /**
@@ -11,7 +12,10 @@ import { cn } from '@/lib/utils'
  */
 export function ObjectivesList({ objectives, className }) {
   const items = Array.isArray(objectives)
-    ? objectives.filter((item) => typeof item === 'string' && item.trim())
+    ? objectives
+        .filter((item) => typeof item === 'string' && item.trim())
+        .map((item) => htmlToPlainText(item))
+        .filter(Boolean)
     : []
 
   if (items.length === 0) return null

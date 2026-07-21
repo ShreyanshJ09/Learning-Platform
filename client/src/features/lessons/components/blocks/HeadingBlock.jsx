@@ -1,3 +1,4 @@
+import { htmlToPlainText } from '@/lib/htmlToMarkdown'
 import { cn } from '@/lib/utils'
 
 /**
@@ -6,6 +7,8 @@ import { cn } from '@/lib/utils'
  * @param {import('@/features/lessons/registry/types.js').BlockProps} props
  */
 export function HeadingBlock({ block, className }) {
+  const text = htmlToPlainText(typeof block.text === 'string' ? block.text : '')
+
   return (
     <h2
       className={cn(
@@ -13,7 +16,7 @@ export function HeadingBlock({ block, className }) {
         className,
       )}
     >
-      {block.text}
+      {text}
     </h2>
   )
 }

@@ -2,6 +2,7 @@ import json
 from typing import Any, Dict, List
 
 from .exceptions import OutlineParseError
+from .html_to_markdown import html_to_markdown
 
 
 CourseOutline = Dict[str, Any]
@@ -54,7 +55,7 @@ def parse_lesson_content(raw_response: str) -> LessonContent:
     for objective in objectives:
         if not isinstance(objective, str) or not objective.strip():
             raise OutlineParseError("Each objective must be a non-empty string.")
-        parsed_objectives.append(objective.strip())
+        parsed_objectives.append(html_to_markdown(objective.strip()))
 
     content = payload.get("content")
     if not isinstance(content, list) or not content:
@@ -110,14 +111,14 @@ def _parse_content_block(block: Any) -> Dict[str, Any]:
 def _parse_heading_block(block: Dict[str, Any]) -> Dict[str, str]:
     return {
         "type": "heading",
-        "text": _required_string(block, "text"),
+        "text": html_to_markdown(_required_string(block, "text")),
     }
 
 
 def _parse_paragraph_block(block: Dict[str, Any]) -> Dict[str, str]:
     return {
         "type": "paragraph",
-        "text": _required_string(block, "text"),
+        "text": html_to_markdown(_required_string(block, "text")),
     }
 
 
@@ -154,10 +155,10 @@ def _parse_mcq_block(block: Dict[str, Any]) -> Dict[str, Any]:
 
     return {
         "type": "mcq",
-        "question": question,
-        "options": parsed_options,
+        "question": html_to_markdown(question),
+        "options": [html_to_markdown(option) for option in parsed_options],
         "answer": answer,
-        "explanation": _required_string(block, "explanation"),
+        "explanation": html_to_markdown(_required_string(block, "explanation")),
     }
 
 

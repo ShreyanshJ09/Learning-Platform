@@ -1,4 +1,5 @@
 import { useId, useState } from 'react'
+import { htmlToPlainText } from '@/lib/htmlToMarkdown'
 import { cn } from '@/lib/utils'
 
 /**
@@ -12,14 +13,21 @@ export function McqBlock({ block, index, className }) {
   const questionId = `${groupId}-question`
   const [selected, setSelected] = useState(null)
 
-  const question = typeof block.question === 'string' ? block.question : ''
-  const options = Array.isArray(block.options) ? block.options : []
+  const question = htmlToPlainText(
+    typeof block.question === 'string' ? block.question : '',
+  )
+  const options = Array.isArray(block.options)
+    ? block.options.map((option) =>
+        htmlToPlainText(typeof option === 'string' ? option : ''),
+      )
+    : []
   const answerIndex =
     typeof block.answer === 'number' && Number.isInteger(block.answer)
       ? block.answer
       : -1
-  const explanation =
-    typeof block.explanation === 'string' ? block.explanation : ''
+  const explanation = htmlToPlainText(
+    typeof block.explanation === 'string' ? block.explanation : '',
+  )
 
   const hasAnswered = selected !== null
   const isCorrect = hasAnswered && selected === answerIndex
