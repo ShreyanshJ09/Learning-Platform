@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
-import { BookOpen, Sparkles } from 'lucide-react'
+import { BookOpen } from 'lucide-react'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/feedback/ErrorState'
@@ -7,10 +7,10 @@ import { LessonSkeleton } from '@/components/feedback/LessonSkeleton'
 import { buttonVariants } from '@/components/ui/button'
 import { useCourse } from '@/features/courses/hooks/useCourse'
 import { useCourseModules } from '@/features/courses/hooks/useCourseModules'
+import { GenerateLessonPanel } from '@/features/generation/components/GenerateLessonPanel'
+import { EnrichedLessonView } from '@/features/generation/components/EnrichedLessonView'
 import { LessonPrevNext } from '@/features/lessons/components/LessonPrevNext'
-import { LessonRenderer } from '@/features/lessons/components/LessonRenderer'
 import { LessonSidebar } from '@/features/lessons/components/LessonSidebar'
-import { ObjectivesList } from '@/features/lessons/components/ObjectivesList'
 import { useLesson } from '@/features/lessons/hooks/useLesson'
 import {
   findModuleTitle,
@@ -20,7 +20,6 @@ import { paths } from '@/routes/paths'
 
 /**
  * Lesson viewer — flush-left syllabus rail + content column with prev/next.
- * Generate / regenerate UI arrives in Phase 6; not-enriched shows a static message.
  */
 export function LessonViewerPage() {
   const { courseId, lessonId } = useParams()
@@ -113,56 +112,23 @@ export function LessonViewerPage() {
         {lessonPending ? (
           <LessonSkeleton />
         ) : !lesson.is_enriched ? (
-          <NotEnrichedState title={lesson.title} courseId={courseId} />
+          <GenerateLessonPanel
+            lessonId={lessonId}
+            courseId={courseId}
+            title={lesson.title}
+          />
         ) : (
-          <article className="flex flex-col gap-6">
-            <header className="space-y-1">
-              <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
-                {lesson.title}
-              </h1>
-            </header>
-
-            <ObjectivesList objectives={lesson.objectives} />
-            <LessonRenderer content={lesson.content} />
-          </article>
+          <EnrichedLessonView
+            lesson={lesson}
+            lessonId={lessonId}
+            courseId={courseId}
+          />
         )}
 
         {!lessonPending && courseId ? (
           <LessonPrevNext courseId={courseId} prev={prev} next={next} />
         ) : null}
       </div>
-    </div>
-  )
-}
-
-/**
- * Phase 5 placeholder — Phase 6 replaces this with GenerateLessonPanel.
- *
- * @param {{ title?: string, courseId?: string }} props
- */
-function NotEnrichedState({ title, courseId }) {
-  return (
-    <div className="flex flex-col gap-6">
-      {title ? (
-        <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
-          {title}
-        </h1>
-      ) : null}
-      <EmptyState
-        icon={<Sparkles className="size-5" aria-hidden />}
-        title="This lesson hasn't been generated yet"
-        description="AI lesson generation arrives in a later phase. You can go back to the syllabus for now."
-        action={
-          courseId ? (
-            <Link
-              to={paths.course(courseId)}
-              className={buttonVariants({ variant: 'outline' })}
-            >
-              Back to syllabus
-            </Link>
-          ) : null
-        }
-      />
     </div>
   )
 }

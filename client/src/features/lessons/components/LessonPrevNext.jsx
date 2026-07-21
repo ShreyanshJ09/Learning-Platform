@@ -21,25 +21,28 @@ export function LessonPrevNext({ courseId, prev, next, className }) {
     <nav
       aria-label="Lesson pagination"
       className={cn(
-        'sticky bottom-0 z-10 -mx-4 mt-auto border-t border-border bg-background/95 px-4 py-3 backdrop-blur supports-backdrop-filter:bg-background/80 sm:-mx-6 sm:px-6',
+        'sticky bottom-0 z-10 -mx-4 mt-auto border-t border-border bg-background/95 px-4 py-4 backdrop-blur supports-backdrop-filter:bg-background/80 sm:-mx-6 sm:px-6',
         className,
       )}
     >
-      <div className="flex items-stretch justify-between gap-3">
+      <div className="flex items-stretch justify-between gap-4">
         {prev ? (
           <Link
             to={paths.lesson(courseId, prev.id)}
             className={cn(
               buttonVariants({ variant: 'outline' }),
-              'min-w-0 max-w-[50%] flex-1 justify-start sm:max-w-xs',
+              'h-auto min-h-14 min-w-0 max-w-[50%] flex-1 gap-3 px-4 py-3 sm:max-w-sm',
+              'items-center justify-start text-left whitespace-normal',
             )}
           >
-            <ChevronLeft className="size-4 shrink-0" aria-hidden />
-            <span className="min-w-0 truncate text-left">
-              <span className="block text-[0.65rem] font-normal uppercase tracking-wide text-muted-foreground">
+            <ChevronLeft className="size-5 shrink-0" aria-hidden />
+            <span className="min-w-0">
+              <span className="block text-xs font-normal uppercase tracking-wide text-muted-foreground">
                 Previous
               </span>
-              <span className="block truncate">{prev.title}</span>
+              <span className="mt-0.5 block truncate text-sm font-medium leading-snug">
+                {prev.title}
+              </span>
             </span>
           </Link>
         ) : (
@@ -51,16 +54,19 @@ export function LessonPrevNext({ courseId, prev, next, className }) {
             to={paths.lesson(courseId, next.id)}
             className={cn(
               buttonVariants({ variant: 'outline' }),
-              'min-w-0 max-w-[50%] flex-1 justify-end sm:max-w-xs',
+              'h-auto min-h-14 min-w-0 max-w-[50%] flex-1 gap-3 px-4 py-3 sm:max-w-sm',
+              'items-center justify-end text-right whitespace-normal',
             )}
           >
-            <span className="min-w-0 truncate text-right">
-              <span className="block text-[0.65rem] font-normal uppercase tracking-wide text-muted-foreground">
+            <span className="min-w-0">
+              <span className="block text-xs font-normal uppercase tracking-wide text-muted-foreground">
                 Next
               </span>
-              <span className="block truncate">{next.title}</span>
+              <span className="mt-0.5 block truncate text-sm font-medium leading-snug">
+                {next.title}
+              </span>
             </span>
-            <ChevronRight className="size-4 shrink-0" aria-hidden />
+            <ChevronRight className="size-5 shrink-0" aria-hidden />
           </Link>
         ) : (
           <span className="flex-1" aria-hidden />

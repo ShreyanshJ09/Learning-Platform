@@ -11,7 +11,7 @@ export function Topbar({ onMenuClick }) {
   const isDark = resolvedTheme === 'dark'
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border bg-background px-4">
+    <header className="flex h-14 shrink-0 items-center justify-between gap-3 bg-background px-4">
       <div className="flex items-center gap-2">
         <Button
           type="button"

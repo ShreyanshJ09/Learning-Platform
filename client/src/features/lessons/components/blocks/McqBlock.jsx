@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
  */
 export function McqBlock({ block, index, className }) {
   const groupId = useId()
+  const questionId = `${groupId}-question`
   const [selected, setSelected] = useState(null)
 
   const question = typeof block.question === 'string' ? block.question : ''
@@ -24,19 +25,23 @@ export function McqBlock({ block, index, className }) {
   const isCorrect = hasAnswered && selected === answerIndex
 
   return (
-    <fieldset
+    <section
+      aria-labelledby={questionId}
       className={cn(
-        'rounded-xl bg-card px-4 py-4 ring-1 ring-foreground/10',
+        'w-full min-w-0 rounded-xl bg-card px-4 py-4 ring-1 ring-foreground/10',
         className,
       )}
     >
-      <legend className="mb-3 font-heading text-base font-medium text-foreground">
+      <h3
+        id={questionId}
+        className="mb-3 font-heading text-base font-medium text-foreground"
+      >
         {question || `Question ${index + 1}`}
-      </legend>
+      </h3>
 
       <div
         role="radiogroup"
-        aria-label={question || 'Multiple choice options'}
+        aria-labelledby={questionId}
         className="flex flex-col gap-2"
       >
         {options.map((option, optionIndex) => {
@@ -71,7 +76,7 @@ export function McqBlock({ block, index, className }) {
               />
               <span
                 className={cn(
-                  'min-w-0 flex-1 text-foreground',
+                  'min-w-0 flex-1 break-words text-foreground',
                   showCorrect && 'font-medium',
                 )}
               >
@@ -100,6 +105,6 @@ export function McqBlock({ block, index, className }) {
           ) : null}
         </div>
       ) : null}
-    </fieldset>
+    </section>
   )
 }

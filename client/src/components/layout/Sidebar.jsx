@@ -16,11 +16,11 @@ export function Sidebar({ className, onNavigate }) {
   return (
     <aside
       className={cn(
-        'flex h-full flex-col border-r border-border bg-background text-foreground',
+        'flex min-h-svh flex-col border-r border-border bg-background text-foreground',
         className,
       )}
     >
-      <div className="flex h-14 items-center gap-2 border-b border-sidebar-border px-4">
+      <div className="flex h-14 items-center gap-2 px-4">
         <BookOpen className="size-5 shrink-0 text-sidebar-primary" aria-hidden />
         <span className="font-heading text-sm font-semibold tracking-tight">
           Learn with AI

@@ -1,19 +1,17 @@
 import { PageHeader } from '@/components/common/PageHeader'
+import { GenerateCourseForm } from '@/features/generation/components/GenerateCourseForm'
 
 /**
- * Placeholder until Phase 6 (AI generate course).
- * Linked from dashboard empty CTA and sidebar so nav smoke tests work.
+ * Create course — topic prompt → AI generation → navigate to syllabus.
  */
 export function CreateCoursePage() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-8">
       <PageHeader
         title="Create course"
-        description="Course generation arrives in a later phase. This route is a placeholder."
+        description="Enter a topic and we'll build a structured syllabus with AI."
       />
-      <p className="text-sm text-muted-foreground">
-        You’ll enter a topic here and generate a structured course with AI.
-      </p>
+      <GenerateCourseForm className="mx-auto w-full max-w-xl" />
     </div>
   )
 }
