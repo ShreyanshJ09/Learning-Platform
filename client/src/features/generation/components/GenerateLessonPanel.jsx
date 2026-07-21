@@ -13,6 +13,9 @@ import { cn } from '@/lib/utils'
  * Shown when is_enriched === false — auto-starts generation on mount.
  * Displays skeleton while pending; ErrorState + retry on failure.
  *
+ * Uses mutateAsync + try/catch (not mutate onError) so failures still
+ * surface if the mutation observer disconnects mid-request.
+ *
  * @param {{
  *   lessonId: string,
  *   courseId?: string,
@@ -26,26 +29,30 @@ export function GenerateLessonPanel({
   title,
   className,
 }) {
-  const { mutate, isPending } = useGenerateLesson(lessonId, courseId)
+  const { mutateAsync } = useGenerateLesson(lessonId, courseId)
   const [generationError, setGenerationError] = useState(null)
+  const [isGenerating, setIsGenerating] = useState(false)
   const startedForLessonRef = useRef(null)
 
-  function startGeneration() {
+  async function startGeneration() {
     if (!lessonId) return
 
     setGenerationError(null)
-    mutate(undefined, {
-      onError: (err) => {
-        startedForLessonRef.current = null
-        setGenerationError(normalizeApiError(err))
-      },
-    })
+    setIsGenerating(true)
+    try {
+      await mutateAsync({})
+    } catch (err) {
+      startedForLessonRef.current = null
+      setGenerationError(normalizeApiError(err))
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   useEffect(() => {
     if (!lessonId || startedForLessonRef.current === lessonId) return
     startedForLessonRef.current = lessonId
-    startGeneration()
+    void startGeneration()
   }, [lessonId]) // eslint-disable-line react-hooks/exhaustive-deps -- fire once per lesson
 
   if (generationError) {
@@ -75,7 +82,7 @@ export function GenerateLessonPanel({
         </h1>
       ) : null}
       <p className="text-sm text-muted-foreground">
-        {isPending
+        {isGenerating
           ? 'Generating lesson content… this usually takes a few seconds.'
           : 'Preparing to generate lesson content…'}
       </p>

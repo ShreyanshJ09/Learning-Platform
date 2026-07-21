@@ -17,7 +17,7 @@ export function getGenerationErrorMessage(apiError, context = 'course') {
 
   if (apiError.status === 502) {
     return context === 'lesson'
-      ? "We couldn't generate this lesson. Please try again."
+      ? "AI service is temporarily unavailable. Please try again."
       : "We couldn't build a course for that topic. Try rephrasing and generate again."
   }
 
