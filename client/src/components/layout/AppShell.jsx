@@ -50,7 +50,7 @@ export function AppShell({ hideSidebar = false }) {
             <button
               type="button"
               className={cn(
-                'absolute inset-0 bg-black/40 transition-opacity',
+                'absolute inset-0 bg-foreground/20 transition-opacity',
                 mobileOpen ? 'opacity-100' : 'opacity-0',
               )}
               aria-label="Close navigation"

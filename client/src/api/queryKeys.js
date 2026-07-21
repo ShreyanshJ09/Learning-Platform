@@ -24,4 +24,7 @@ export const queryKeys = {
   lessons: {
     detail: (id) => ['lessons', 'detail', id],
   },
+  media: {
+    youtube: (query) => ['media', 'youtube', query],
+  },
 }

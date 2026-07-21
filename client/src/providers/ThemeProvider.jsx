@@ -1,37 +1,24 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import {
+  THEME_STORAGE_KEY,
+  applyTheme,
+  getStoredTheme,
+  getSystemTheme,
+} from '@/lib/theme'
 
 const ThemeContext = createContext(null)
 
-const STORAGE_KEY = 'ttl-theme'
-
-function getSystemTheme() {
-  if (typeof window === 'undefined') return 'light'
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light'
-}
-
-function applyThemeClass(theme) {
-  const root = document.documentElement
-  const resolved = theme === 'system' ? getSystemTheme() : theme
-  root.classList.toggle('dark', resolved === 'dark')
-  root.style.colorScheme = resolved
-}
-
 export function ThemeProvider({ children, defaultTheme = 'system' }) {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window === 'undefined') return defaultTheme
-    return localStorage.getItem(STORAGE_KEY) ?? defaultTheme
-  })
+  const [theme, setTheme] = useState(() => getStoredTheme(defaultTheme))
 
   useEffect(() => {
-    applyThemeClass(theme)
-    localStorage.setItem(STORAGE_KEY, theme)
+    applyTheme(theme)
+    localStorage.setItem(THEME_STORAGE_KEY, theme)
 
     if (theme !== 'system') return undefined
 
     const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const onChange = () => applyThemeClass('system')
+    const onChange = () => applyTheme('system')
     media.addEventListener('change', onChange)
     return () => media.removeEventListener('change', onChange)
   }, [theme])

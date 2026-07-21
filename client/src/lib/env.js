@@ -8,11 +8,17 @@ const envSchema = z.object({
   VITE_ENV: z
     .enum(['development', 'production', 'test'])
     .default('development'),
+  /** Set to "false" to keep VideoBlock on the placeholder UI. */
+  VITE_ENABLE_YOUTUBE: z
+    .enum(['true', 'false'])
+    .optional()
+    .default('true'),
 })
 
 const parsed = envSchema.safeParse({
   VITE_API_URL: import.meta.env.VITE_API_URL,
   VITE_ENV: import.meta.env.VITE_ENV ?? 'development',
+  VITE_ENABLE_YOUTUBE: import.meta.env.VITE_ENABLE_YOUTUBE ?? 'true',
 })
 
 if (!parsed.success) {
@@ -22,5 +28,8 @@ if (!parsed.success) {
   throw new Error(`Invalid environment configuration:\n${details}`)
 }
 
-/** @type {{ VITE_API_URL: string, VITE_ENV: 'development' | 'production' | 'test' }} */
+/** @type {{ VITE_API_URL: string, VITE_ENV: 'development' | 'production' | 'test', VITE_ENABLE_YOUTUBE: 'true' | 'false' }} */
 export const env = parsed.data
+
+/** When false, VideoBlock shows the legacy placeholder instead of calling the API. */
+export const youtubeEnabled = env.VITE_ENABLE_YOUTUBE === 'true'

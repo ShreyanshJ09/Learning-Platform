@@ -1,14 +1,21 @@
-import { Menu, Moon, Sun } from 'lucide-react'
+import { Menu, Monitor, Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { UserMenu } from '@/components/layout/UserMenu'
+import { cycleTheme } from '@/lib/theme'
 import { useTheme } from '@/providers/ThemeProvider'
+
+const THEME_LABELS = {
+  light: 'light mode',
+  dark: 'dark mode',
+  system: 'system theme',
+}
 
 /**
  * Top chrome: mobile sidebar trigger, theme toggle, user menu.
  */
 export function Topbar({ onMenuClick }) {
-  const { resolvedTheme, setTheme } = useTheme()
-  const isDark = resolvedTheme === 'dark'
+  const { theme, resolvedTheme, setTheme } = useTheme()
+  const nextTheme = cycleTheme(theme)
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between gap-3 bg-background px-4">
@@ -33,10 +40,16 @@ export function Topbar({ onMenuClick }) {
           type="button"
           variant="ghost"
           size="icon"
-          aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-          onClick={() => setTheme(isDark ? 'light' : 'dark')}
+          aria-label={`Theme: ${THEME_LABELS[theme]}. Switch to ${THEME_LABELS[nextTheme]}.`}
+          onClick={() => setTheme(nextTheme)}
         >
-          {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+          {theme === 'system' ? (
+            <Monitor className="size-4" />
+          ) : resolvedTheme === 'dark' ? (
+            <Sun className="size-4" />
+          ) : (
+            <Moon className="size-4" />
+          )}
         </Button>
         <UserMenu />
       </div>

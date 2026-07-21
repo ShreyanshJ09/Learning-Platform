@@ -5,6 +5,26 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>client</title>
+    <!-- Keep in sync with client/src/lib/theme.js (THEME_STORAGE_KEY + resolve logic). -->
+    <script>
+      (function () {
+        var key = 'ttl-theme'
+        var stored = localStorage.getItem(key)
+        var theme =
+          stored === 'light' || stored === 'dark' || stored === 'system'
+            ? stored
+            : 'system'
+        var resolved =
+          theme === 'system'
+            ? window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+            : theme
+        var root = document.documentElement
+        if (resolved === 'dark') root.classList.add('dark')
+        root.style.colorScheme = resolved
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

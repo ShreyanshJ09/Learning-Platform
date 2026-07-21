@@ -59,7 +59,7 @@ export function McqBlock({ block, index, className }) {
                 'flex cursor-pointer items-start gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ring-1 ring-transparent',
                 !hasAnswered && 'hover:bg-muted/60',
                 isSelected && !hasAnswered && 'bg-muted/60 ring-foreground/10',
-                showCorrect && 'bg-emerald-500/10 ring-emerald-500/30',
+                showCorrect && 'bg-success/10 ring-success/30',
                 showIncorrect && 'bg-destructive/10 ring-destructive/30',
                 hasAnswered && 'cursor-default',
               )}
@@ -92,7 +92,7 @@ export function McqBlock({ block, index, className }) {
           className={cn(
             'mt-3 rounded-lg px-3 py-2 text-sm',
             isCorrect
-              ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-200'
+              ? 'bg-success/10 text-success'
               : 'bg-destructive/10 text-destructive',
           )}
           role="status"
