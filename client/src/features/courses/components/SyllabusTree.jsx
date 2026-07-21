@@ -3,7 +3,7 @@ import { ModuleAccordionItem } from '@/features/courses/components/ModuleAccordi
 import { cn } from '@/lib/utils'
 
 /**
- * Course syllabus: accordion of modules → lessons with enriched indicators.
+ * Course syllabus: accordion of modules → lesson links.
  *
  * @param {{
  *   courseId: string,
@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils'
  *     id: string,
  *     title: string,
  *     order?: number,
- *     lessons?: Array<{ id: string, title: string, order?: number, is_enriched?: boolean }>,
+ *     lessons?: Array<{ id: string, title: string, order?: number }>,
  *   }>,
  *   className?: string,
  * }} props

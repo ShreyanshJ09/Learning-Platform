@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils'
  *     id: string,
  *     title: string,
  *     order?: number,
- *     lessons?: Array<{ id: string, title: string, order?: number, is_enriched?: boolean }>,
+ *     lessons?: Array<{ id: string, title: string, order?: number }>,
  *   },
  *   className?: string,
  * }} props

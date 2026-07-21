@@ -16,7 +16,7 @@ export function Sidebar({ className, onNavigate }) {
   return (
     <aside
       className={cn(
-        'flex h-full flex-col border-r border-border bg-sidebar text-sidebar-foreground',
+        'flex h-full flex-col border-r border-border bg-background text-foreground',
         className,
       )}
     >
@@ -38,8 +38,8 @@ export function Sidebar({ className, onNavigate }) {
               cn(
                 'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                  : 'text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground',
+                  ? 'bg-muted text-foreground'
+                  : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground',
               )
             }
           >

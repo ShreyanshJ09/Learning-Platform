@@ -4,6 +4,7 @@ import { CourseDetailPage } from '@/pages/CourseDetailPage'
 import { CreateCoursePage } from '@/pages/CreateCoursePage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { LandingPage } from '@/pages/LandingPage'
+import { LessonViewerPage } from '@/pages/LessonViewerPage'
 import { LoginPage } from '@/pages/LoginPage'
 import { ProfilePage } from '@/pages/ProfilePage'
 import { RegisterPage } from '@/pages/RegisterPage'
@@ -28,6 +29,13 @@ export function AppRouter() {
             <Route path={paths.createCourse} element={<CreateCoursePage />} />
             <Route path={paths.profile} element={<ProfilePage />} />
             <Route path="/courses/:courseId" element={<CourseDetailPage />} />
+          </Route>
+          {/* Lesson viewer: topbar only — no app nav (Dashboard / Create / Profile) */}
+          <Route element={<AppShell hideSidebar />}>
+            <Route
+              path="/courses/:courseId/lessons/:lessonId"
+              element={<LessonViewerPage />}
+            />
           </Route>
         </Route>
 
