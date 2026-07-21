@@ -26,5 +26,6 @@ export const queryKeys = {
   },
   media: {
     youtube: (query) => ['media', 'youtube', query],
+    tts: (language, textHash) => ['media', 'tts', language, textHash],
   },
 }

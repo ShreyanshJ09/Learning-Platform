@@ -9,6 +9,7 @@ import {
   getGenerationErrorMessage,
   getGenerationErrorTitle,
 } from '@/features/generation/lib/generationErrors'
+import { LessonAudioPlayer } from '@/features/media/components/LessonAudioPlayer'
 import { LessonRenderer } from '@/features/lessons/components/LessonRenderer'
 import { ObjectivesList } from '@/features/lessons/components/ObjectivesList'
 import { normalizeApiError } from '@/lib/errors'
@@ -137,6 +138,7 @@ export function EnrichedLessonView({
         />
       ) : (
         <>
+          <LessonAudioPlayer lesson={lesson} />
           <ObjectivesList objectives={lesson.objectives} />
           <LessonRenderer content={lesson.content} />
         </>
