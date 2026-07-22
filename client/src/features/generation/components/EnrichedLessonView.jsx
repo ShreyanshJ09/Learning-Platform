@@ -41,7 +41,7 @@ export function EnrichedLessonView({
   const menuRef = useRef(null)
   const menuId = useId()
 
-  const { mutateAsync, isPending } = useGenerateLesson(lessonId, courseId)
+  const { mutate, isPending } = useGenerateLesson(lessonId, courseId)
 
   useEffect(() => {
     if (!menuOpen) return undefined
@@ -64,13 +64,14 @@ export function EnrichedLessonView({
     }
   }, [menuOpen])
 
-  async function handleRegenerate() {
+  function handleRegenerate() {
     setRegenerateError(null)
-    try {
-      await mutateAsync({ regenerate: true })
-    } catch (err) {
-      setRegenerateError(normalizeApiError(err))
-    }
+    mutate(
+      { regenerate: true },
+      {
+        onError: (err) => setRegenerateError(normalizeApiError(err)),
+      },
+    )
   }
 
   function openRegenerateDialog() {
