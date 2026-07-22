@@ -17,8 +17,8 @@ from .prompts import generate_course_prompt, generate_lesson_prompt
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_GEMINI_MODEL = "gemini-3.5-flash"
-MAX_GEMINI_ATTEMPTS = 1
+DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
+MAX_GEMINI_ATTEMPTS = 3
 
 
 def generate_course_for_user(*, topic: str, user: Any) -> Course:
@@ -118,24 +118,21 @@ def _generate_gemini_json(
                 raise GeminiServiceError("Gemini returned an empty response.")
             return parse_response(response_text)
         except errors.ClientError as exc:
-            if exc.code == 404:
+            if exc.status_code == 404:
                 logger.error("Gemini model %s is not available.", model, exc_info=True)
                 raise GeminiConfigurationError(
                     f"Gemini model '{model}' is not available."
                 ) from exc
             logger.warning(
-                "Gemini %s attempt %s/%s failed (code=%s).",
+                "Gemini %s attempt %s/%s failed.",
                 log_label,
                 attempt,
                 MAX_GEMINI_ATTEMPTS,
-                exc.code,
                 exc_info=True,
             )
             if attempt == MAX_GEMINI_ATTEMPTS:
                 raise GeminiServiceError(failure_message) from exc
-            # Free-tier 429s often ask ~30s; short backoff just burns attempts.
-            sleep_seconds = 35 if exc.code == 429 else 2 ** (attempt - 1)
-            time.sleep(sleep_seconds)
+            time.sleep(2 ** (attempt - 1))
         except Exception as exc:
             logger.warning(
                 "Gemini %s attempt %s/%s failed.",
@@ -151,35 +148,12 @@ def _generate_gemini_json(
     raise GeminiServiceError(failure_message)
 
 
-def enqueue_lesson_enrichment(lesson_id: UUID) -> None:
-    from .tasks import enrich_lesson_task
-
-    enrich_lesson_task.delay(str(lesson_id))
-
-
-def enqueue_unenriched_lesson_ids(lesson_ids: list[UUID]) -> None:
-    for lesson_id in lesson_ids:
-        enqueue_lesson_enrichment(lesson_id)
-
-
-def enqueue_unenriched_lessons_for_course(*, course: Course) -> None:
-    lesson_ids = list(
-        Lesson.objects.filter(
-            module__course=course,
-            is_enriched=False,
-        ).values_list("id", flat=True)
-    )
-    enqueue_unenriched_lesson_ids(lesson_ids)
-
-
 def create_course_from_outline(
     *,
     topic: str,
     user: Any,
     outline: CourseOutline,
 ) -> Course:
-    lesson_ids: list[UUID] = []
-
     with transaction.atomic():
         course = Course.objects.create(
             creator=user,
@@ -198,7 +172,7 @@ def create_course_from_outline(
                 module_data["lessons"],
                 start=1,
             ):
-                lesson = Lesson.objects.create(
+                Lesson.objects.create(
                     module=module,
                     title=lesson_data["title"],
                     objectives=[],
@@ -206,11 +180,6 @@ def create_course_from_outline(
                     is_enriched=False,
                     order=lesson_order,
                 )
-                lesson_ids.append(lesson.pk)
-
-        transaction.on_commit(
-            lambda ids=list(lesson_ids): enqueue_unenriched_lesson_ids(ids)
-        )
 
     logger.info("Generated course outline %s for user %s.", course.pk, user.pk)
     return course
